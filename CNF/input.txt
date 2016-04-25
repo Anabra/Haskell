@@ -1,0 +1,3 @@
+S;epszilon;A,B,C,D,S;a,b,epszilon
+S->a,A|a,D|b,C|epszilon
+A->a,B|b,A|b,C
