@@ -58,23 +58,32 @@ searchForWord word rules@(r:rs)
     | word > rhs = searchForWord word rs
     | otherwise = lhs : searchForWord word rs
     where (lhs, rhs) = r
-
-sortedbrules1 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar1
-sortedbrules2 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar2
-sortedbrules3 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar3
     
 
 cyk :: [Rule'] -> WorD -> [Symbol]
 cyk rules [t] = searchForWord [t] rules
-cyk rules word = concatMap (flip (searchForWord) rules) descartesWords
+cyk rules word = nub $ concatMap (flip (searchForWord) rules) descartesWords
     where
     descartesWords = concat [ descartes [cyk rules pre, cyk rules suf] | w@(pre,suf) <- sliceWord word]
     
     --searchForWord ["a"] ( mergesort (\(_,a) (_,b) -> a < b) (breakdownRules (chomsky grammar1)))
+    
+sortedbrules11 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ ("S","epsilon",["S","A","B","C","D"],["a","b"],[("S",[["A","B"],["C","D"]]),("A",[["A","A"],["C","S"],["a"]]),("B",[["B","B"],["D","S"],["b"]]),("C",[["D","A"],["C","B"],["a"]]),("D",[["DD"],["b"]])])
     
 isInLanguage :: WorD -> Grammar -> Bool
 isInLanguage word grammar = start `elem` (cyk rules' word)
     where
     rules' = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ cgrammar
     (start, eps, nonterminals, terminals, rules) = cgrammar
-    cgrammar = chomsky grammar
+    cgrammar 
+        | not (isChomsky grammar) = chomsky grammar
+        | otherwise = grammar
+        
+        
+sortedbrules1 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar1
+sortedbrules2 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar2
+sortedbrules3 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar3
+sortedbrules4 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ grammar4
+sortedbrules5 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ grammar5
+sortedbrules6 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ grammar6
+

@@ -1,0 +1,5 @@
+S;epsilon;S,A,B,C;a,b,c
+S->A,S|S,B|a
+A->B,C|a
+B->A,B|C,C|b
+C->A,B|c
