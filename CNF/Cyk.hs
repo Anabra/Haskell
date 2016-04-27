@@ -66,10 +66,8 @@ cyk rules word = nub $ concatMap (flip (searchForWord) rules) descartesWords
     where
     descartesWords = concat [ descartes [cyk rules pre, cyk rules suf] | w@(pre,suf) <- sliceWord word]
     
-    --searchForWord ["a"] ( mergesort (\(_,a) (_,b) -> a < b) (breakdownRules (chomsky grammar1)))
-    
-sortedbrules11 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ ("S","epsilon",["S","A","B","C","D"],["a","b"],[("S",[["A","B"],["C","D"]]),("A",[["A","A"],["C","S"],["a"]]),("B",[["B","B"],["D","S"],["b"]]),("C",[["D","A"],["C","B"],["a"]]),("D",[["DD"],["b"]])])
-    
+  
+   
 isInLanguage :: WorD -> Grammar -> Bool
 isInLanguage word grammar = start `elem` (cyk rules' word)
     where
