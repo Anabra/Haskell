@@ -1,4 +1,4 @@
-module GrammarParser (stringToGrammar, grammarToString) where
+module GrammarParser (stringToWord, stringToGrammar, grammarToString) where
 
 import Types
 import Data.List
