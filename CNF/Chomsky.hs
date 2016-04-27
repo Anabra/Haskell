@@ -7,18 +7,15 @@ import Types
 
 --------------------------------------------------------------------------------GRAMMAR REDUCTION-------------------------------------------------------------------------------------
 
-finD :: (a -> Bool) -> [a] -> a
-finD _ [] = error "finD: No such element"
-finD beta list@(x:xs)
-   | beta x = x
-   | otherwise = finD beta xs
-
 --should be called by passing the start symbol
 getReachables :: Grammar -> [Symbol] -> [Symbol] -> [Symbol]
 getReachables _ checkedSet [] = checkedSet
 getReachables grammar checkedSet currentSet@(x:xs) = getReachables grammar (x:checkedSet) (xs ++ newNts)
    where 
-   nts = concat $ snd $ finD (\(lhs, _) -> lhs == x) rules   --it merges the right hand sides, but still keeps each Symbol separted (as individual elements in the list)
+   nts = case foundRule of
+                 Just foundRule  -> concat $ snd foundRule
+                 Nothing -> [] --if it did not find anything, it will return an empty list
+   foundRule = find (\(lhs, _) -> lhs == x) rules   --it merges the right hand sides, but still keeps each Symbol separted (as individual elements in the list)
    newNts = [ nt | nt <- nts, not (nt `elem` currentSet) && not (nt `elem` checkedSet) && nt `elem` nonterminals]
    (start, eps, nonterminals, terminals, rules) = grammar
 
@@ -135,7 +132,11 @@ broadenChainSet _ checkedSet [] = checkedSet
 broadenChainSet grammar checkedSet currentSet@(x:xs) = broadenChainSet grammar (x:checkedSet) (xs ++ newNts)
    where 
    chainNts = concat $ filter (\y -> isSingleton y) rhs
-   currentRule@(lhs, rhs) = finD (\(a,b) -> a == x) rules
+   currentRule@(lhs, rhs) = case query of 
+                            Just query -> query
+                            --if it did not find anything, it will return this "default rule"
+                            Nothing -> ("", [])
+   query = find (\(a,b) -> a == x) rules
    newNts = [ nt | nt <- chainNts, not (nt `elem` currentSet) && not (nt `elem` checkedSet) && nt `elem` nonterminals]
    (start, eps, nonterminals, terminals, rules) = grammar
 
@@ -146,7 +147,13 @@ dechain grammar = (start, eps, nonterminals, terminals, newRules)
     newRules = [copyChains rule | rule <- rules]
     copyChains r@(lhs, rhs) = (lhs, nub . removeSingles $ rhs ++ (concat [ snd $ chainRule s | s <- chainSet lhs])) --it gets all the NTs that can be reached on chain from the lhs of r, then it searches the corresponding rules, gets the rhs of those, then adds them to the rhs of r and finally removes all subRules that have a singleton && nonterminal rhs
     removeSingles l = filter (\y -> not (isSingleton y) || y `isSubsetOf` terminals) l --removes all elements that are one-length nonterminal lists
-    chainRule s = finD (\(a,b) -> a == s) rules --gets the rule correspondng to the symbol s
+    --gets the rule correspondng to the symbol s
+    chainRule s = case query of
+                  Just query -> query
+                  --if it did not find anything, it return this "default" rule
+                  Nothing -> ("", []) 
+                  where
+                  query = find (\(a,b) -> a == s) rules 
     chainSet sym = broadenChainSet grammar [] [sym]
     (start, eps, nonterminals, terminals, rules) = grammar
     
