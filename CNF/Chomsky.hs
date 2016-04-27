@@ -18,7 +18,10 @@ getReachables :: Grammar -> [Symbol] -> [Symbol] -> [Symbol]
 getReachables _ checkedSet [] = checkedSet
 getReachables grammar checkedSet currentSet@(x:xs) = getReachables grammar (x:checkedSet) (xs ++ newNts)
    where 
-   nts = concat $ snd $ finD (\(lhs, _) -> lhs == x) rules   --it merges the right hand sides, but still keeps each Symbol separted (as individual elements in the list)
+   nts = case foundRule of
+                 Just foundRule  -> concat $ snd foundRule
+                 Nothing -> []
+   foundRule = find (\(lhs, _) -> lhs == x) rules   --it merges the right hand sides, but still keeps each Symbol separted (as individual elements in the list)
    newNts = [ nt | nt <- nts, not (nt `elem` currentSet) && not (nt `elem` checkedSet) && nt `elem` nonterminals]
    (start, eps, nonterminals, terminals, rules) = grammar
 
