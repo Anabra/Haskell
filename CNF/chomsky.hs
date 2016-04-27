@@ -204,6 +204,11 @@ isChomsky grammar = noEps && rulesOK
     
  -------------------------------------------------------------------------------CYK  ALGORYTHM-------------------------------------------------------------------------------------
 
+--for testing
+toWord :: [Char] -> WorD
+toWord [] = []
+toWord (x:xs) = [x] : toWord xs
+ 
 breakdown :: Rule -> [Rule']
 breakdown rule@(lhs,rhs) = [ (lhs, subrule) | subrule <- rhs ]
 
@@ -244,15 +249,18 @@ sliceWord word@(x:xs) = slcwrdHelper [x] xs
     --slcwrdHelper [x] ys = [([x], ys)]
     --slcwrdHelper xs ys = (xs, ys) : slcwrdHelper (init xs) (last xs : ys)
     
---filter rules a b == c // a -> rhs to search for; b -> rules to filter (sorted by rhs); c -> lhs-s of each rule that has passed the query
+--searchForWord a b == c // a -> rhs to search for; b -> rules to filter (sorted by rhs); c -> lhs-s of each rule that has passed the query
 searchForWord :: WorD -> [Rule'] -> [Symbol]
+searchForWord _ [] = []
 searchForWord word rules@(r:rs)
     | word < rhs = []
     | word > rhs = searchForWord word rs
     | otherwise = lhs : searchForWord word rs
     where (lhs, rhs) = r
 
-sortedbrules = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar1
+sortedbrules1 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar1
+sortedbrules2 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar2
+sortedbrules3 = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ chomsky grammar3
     
 
 cyk :: [Rule'] -> WorD -> [Symbol]
@@ -266,8 +274,9 @@ cyk rules word = concatMap (flip (searchForWord) rules) descartesWords
 isInLanguage :: WorD -> Grammar -> Bool
 isInLanguage word grammar = start `elem` (cyk rules' word)
     where
-    rules' = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ grammar
-    (start, eps, nonterminals, terminals, rules) = chomsky grammar
+    rules' = mergesort (\(_,a) (_,b) -> a < b) $ breakdownRules $ cgrammar
+    (start, eps, nonterminals, terminals, rules) = cgrammar
+    cgrammar = chomsky grammar
 
     
  -------------------------------------------------------------------------------EXAMPLE INPUTS-------------------------------------------------------------------------------------
@@ -292,6 +301,13 @@ rules2 = [("S", [["A"], ["B"],       ["A","B","B","B"], ["C"]])
          ,("C", [["a"], ["a","b"],   ["A"],["D"]])
          ,("D", [["D"], ["D","D"],   ["d"]])] :: [Rule]
 grammar2 = ("S", "epsilon", nonterminals2, terminals2, rules2) :: Grammar
+
+terminals3 = ["a","b","epsilon"] :: [Symbol]
+nonterminals3 = ["S"] :: [Symbol]
+rules3 = [("S", [["a","S","b"], ["b","S","a"], ["S","S"], ["epsilon"] ])] :: [Rule]
+grammar3 = ("S", "epsilon", nonterminals3, terminals3, rules3) :: Grammar
+
+--isInLanguage (toWord "aababbabab") grammar3
 
 
 
