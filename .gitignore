@@ -26,3 +26,7 @@
 *.exe
 *.out
 *.app
+
+# custom
+*.hi
+*.o
