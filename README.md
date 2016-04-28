@@ -21,7 +21,7 @@ The program should be run by executing the **Main.exe** file from the command li
 
 >***The first line contains the start symbol, empty word symbol nonterminal symbols and the terminal symbols.***
 
->##### Possible input of grammer:
+>##### Possible input of grammar:
 >>```
 S;epsilon;S,A,B,C;a,b,c
 S->A,S|S,B|a
