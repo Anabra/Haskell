@@ -22,11 +22,13 @@ The program should be run by executing the **Main.exe** file from the command li
 >***The first line contains the start symbol, empty word symbol nonterminal symbols and the terminal symbols.***
 
 >##### Possible input of grammer:
->>S;epsilon;S,A,B,C;a,b,c
->>S->A,S|S,B|a
->>A->B,C|a
->>B->A,B|C,C|b
->>C->A,B|c
+>>```
+S;epsilon;S,A,B,C;a,b,c
+S->A,S|S,B|a
+A->B,C|a
+B->A,B|C,C|b
+C->A,B|c
+```
 
 >As you can see, after the start and empty symbols there are ***semicolons***. It is also true for nonterminals and terminals, but the nonterminals and terminals themselves are separated by a ***simple comma***.
 At the end of the line there is ***no sperarator***. (It is also true for all lines, even the last line, because that ***line does not end with new line tag***. (\n))
@@ -46,38 +48,39 @@ As you can see, these lines end only with new line symbols (\n), ***except the l
 >Each line should have a ***newline character*** at the end of it, **except the last one**.
 
 >##### Possible input of words:
->> a
->> b
->> c
->> a,a
->> a,b
->> b,b
->> b,c
->> c,c
->> a,a,b
->> a,b,b
->> b,b,c
->> b,c,c
->> a,a,b,b
->> a,b,b,c
->> b,b,c,c
->> a,a,b,b,c
->> a,b,b,c,c
->> a,a,b,b,c,c
-
+>>```
+a
+b
+c
+a,a
+a,b
+b,b
+b,c
+c,c
+a,a,b
+a,b,b
+b,b,c
+b,c,c
+a,a,b,b
+a,b,b,c
+b,b,c,c
+a,a,b,b,c
+a,b,b,c,c
+a,a,b,b,c,c
+```
 ----------
 
 >##### Expected output on console:
->> "S;epsilon;S,A,B,C,{a},{b},{c};a,b,c"
->> "S->A,S|S,B|a"
->> "A->B,C|a"
->> "B->A,B|C,C|b"
->> "C->A,B|c"
->> "{a}->a"
->> "{b}->b"
->> "{c}->c"
->> [(["a"],True),(["b"],False),(["c"],False),(["a","a"],True),(["a","b"],True),(["b","b"],False),(["b","c"],False),(["c","c"],False),(["a","a","b"],True),(["a","b","b"],True),(["b","b","c"],False),(["b","c","c"],False),(["a","a","b","b"],True),(["a","b","b","c"],False),(["b","b","c","c"],False),(["a","a","b","b","c"],False),(["a","b","b","c","c"],True),(["a","a","b","b","c","c"],True)]
-
+>>```"S;epsilon;S,A,B,C,{a},{b},{c};a,b,c"
+"S->A,S|S,B|a"
+"A->B,C|a"
+"B->A,B|C,C|b"
+"C->A,B|c"
+"{a}->a"
+"{b}->b"
+"{c}->c"
+[(["a"],True),(["b"],False),(["c"],False),(["a","a"],True),(["a","b"],True),(["b","b"],False),(["b","c"],False),(["c","c"],False),(["a","a","b"],True),(["a","b","b"],True),(["b","b","c"],False),(["b","c","c"],False),(["a","a","b","b"],True),(["a","b","b","c"],False),(["b","b","c","c"],False),(["a","a","b","b","c"],False),(["a","b","b","c","c"],True),(["a","a","b","b","c","c"],True)]
+```
 ----------
 
 ###Common mistakes:
