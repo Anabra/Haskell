@@ -1,7 +1,8 @@
 import Types
 import GrammarParser
-import Chomsky
 import System.Environment
+import Control.Monad
+import Chomsky
 import Cyk
 
 main :: IO ()
@@ -11,10 +12,8 @@ main = do
        inputWords <- readFile inputWordsPath
        let words = [ stringToWord w | w <- lines inputWords]
        let parsedGrammar = chomsky $ stringToGrammar fileContent
-       --let subresult = [ cyk sortedbrules w | w <- words]
-       let result = [ isInLanguage w parsedGrammar | w <- words]
-       print words
-       print parsedGrammar
+       let result = [ (w ,isInLanguage w parsedGrammar) | w <- words]
+       mapM (print) (lines $ grammarToString parsedGrammar)
        print result
 
 
