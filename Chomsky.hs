@@ -158,7 +158,7 @@ dechain grammar = (start, eps, nonterminals, terminals, newRules)
     (start, eps, nonterminals, terminals, rules) = grammar
     
     
---------------------------------------------------------------------------------UNIT RULES---------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------FALSE NONTERMINALS---------------------------------------------------------------------------------------
 
 --replaceTerminals terminals rhs
 replaceTerminals :: [Symbol] -> [Symbol] -> [Symbol]
@@ -176,8 +176,8 @@ replaceRule terminals rule@(lhs,rhs) = (lhs, newRhs)
     where
     newRhs = [ replaceTerminals terminals r | r <- rhs ] 
 
-eliminateUnitRules :: Grammar -> Grammar
-eliminateUnitRules grammar = (start, eps, newNonTerminals, terminals, newRules)
+introduceFalseNonTerminals :: Grammar -> Grammar
+introduceFalseNonTerminals grammar = (start, eps, newNonTerminals, terminals, newRules)
     where
     newRules = [replaceRule terminals rule | rule <- rules] ++ [ (falseNT [t], [[t]]) | t <- terminals ]
     newNonTerminals = nonterminals ++ [ falseNT [t] | t <- terminals ]
@@ -187,7 +187,7 @@ eliminateUnitRules grammar = (start, eps, newNonTerminals, terminals, newRules)
 -------------------------------------------------------------------------------CHOMSKY NORMAL FORM-------------------------------------------------------------------------------------
 
 chomsky :: Grammar -> Grammar
-chomsky grammar = eliminateUnitRules $ dechain $ removeEpsilonRules $ reduceLength $ reduceGrammar grammar
+chomsky grammar = introduceFalseNonTerminals $ dechain $ removeEpsilonRules $ reduceLength $ reduceGrammar grammar
 
 checkRule :: [Symbol] -> [Symbol] -> Rule -> Bool
 checkRule nonterminals terminals rule@(lhs,rhs)
